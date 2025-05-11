@@ -1,0 +1,413 @@
+{
+  "move": "start",
+  "children": [
+    {
+      "move": "1.e4",
+      "children": [
+        {
+          "move": "1...e5",
+          "children": [
+            {
+              "move": "2.Nf3",
+              "children": [
+                {
+                  "move": "2...Nc6",
+                  "children": [
+                    {
+                      "move": "Ruy-Lopez (C60-C99)",
+                      "children": [
+                        {
+                          "move": "3.Bb5",
+                          "children": [
+                            {
+                              "move": "3...a6",
+                              "children": [
+                                {
+                                  "move": "Morphy Defense (C70)",
+                                  "children": [
+                                    {
+                                      "move": "4.Ba4",
+                                      "children": [
+                                        {
+                                          "move": "4...Nf6",
+                                          "children": [
+                                            {
+                                              "move": "Berlin Defense (C65-C67)",
+                                              "children": [
+                                                {
+                                                  "move": "5.O-O",
+                                                  "children": [
+                                                    {
+                                                      "move": "5...Nxe4",
+                                                      "children": [
+                                                        {
+                                                          "move": "Berlin Endgame (C67)"
+                                                        }
+                                                      ]
+                                                    },
+                                                    {
+                                                      "move": "5...Be7",
+                                                      "children": [
+                                                        {
+                                                          "move": "Classical Berlin (C65)"
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "move": "4...b5",
+                                              "children": [
+                                                {
+                                                  "move": "Arkhangelsk Defense (C78)"
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "move": "3...Nf6",
+                              "children": [
+                                {
+                                  "move": "Steinitz Defense (C62)"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "move": "Italian Game (C50-C59)",
+                      "children": [
+                        {
+                          "move": "3.Bc4",
+                          "children": [
+                            {
+                              "move": "3...Bc5",
+                              "children": [
+                                {
+                                  "move": "Giuoco Piano (C50)",
+                                  "children": [
+                                    {
+                                      "move": "4.c3",
+                                      "children": [
+                                        {
+                                          "move": "4...Nf6",
+                                          "children": [
+                                            {
+                                              "move": "Two Knights Defense (C55)"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "move": "4...d6",
+                                          "children": [
+                                            {
+                                              "move": "Giuoco Pianissimo (C53)"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "move": "3...Nf6",
+                              "children": [
+                                {
+                                  "move": "Two Knights Defense (C55)",
+                                  "children": [
+                                    {
+                                      "move": "4.Ng5",
+                                      "children": [
+                                        {
+                                          "move": "4...d5",
+                                          "children": [
+                                            {
+                                              "move": "Traxler Counterattack (C57)"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "move": "Scotch Game (C44-C45)",
+                      "children": [
+                        {
+                          "move": "3.d4",
+                          "children": [
+                            {
+                              "move": "3...exd4",
+                              "children": [
+                                {
+                                  "move": "Scotch Gambit (C44)"
+                                },
+                                {
+                                  "move": "Mieses Variation (C45)"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "move": "1...c5",
+          "children": [
+            {
+              "move": "Sicilian Defense (B20-B99)",
+              "children": [
+                {
+                  "move": "2.Nf3",
+                  "children": [
+                    {
+                      "move": "2...d6",
+                      "children": [
+                        {
+                          "move": "Najdorf (B90-B99)",
+                          "children": [
+                            {
+                              "move": "5.a6",
+                              "children": [
+                                {
+                                  "move": "6.Be3",
+                                  "children": [
+                                    {
+                                      "move": "English Attack (B92)"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "move": "6.Bg5",
+                                  "children": [
+                                    {
+                                      "move": "Poisoned Pawn (B97)"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "move": "2...Nc6",
+                      "children": [
+                        {
+                          "move": "Classical Sicilian (B56-B59)",
+                          "children": [
+                            {
+                              "move": "6.Be2",
+                              "children": [
+                                {
+                                  "move": "Sozin Attack (B57)"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "move": "2...e6",
+                      "children": [
+                        {
+                          "move": "Taimanov (B46)"
+                        },
+                        {
+                          "move": "Kan (B41)"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "move": "1...e6",
+          "children": [
+            {
+              "move": "French Defense (C00-C19)",
+              "children": [
+                {
+                  "move": "2.d4",
+                  "children": [
+                    {
+                      "move": "2...d5",
+                      "children": [
+                        {
+                          "move": "3.Nc3",
+                          "children": [
+                            {
+                              "move": "Winawer (C18)",
+                              "children": [
+                                {
+                                  "move": "4.e5",
+                                  "children": [
+                                    {
+                                      "move": "Poisoned Pawn (C19)"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "move": "Classical (C14)"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "move": "1...c6",
+          "children": [
+            {
+              "move": "Caro-Kann (B10-B19)",
+              "children": [
+                {
+                  "move": "2.d4",
+                  "children": [
+                    {
+                      "move": "2...d5",
+                      "children": [
+                        {
+                          "move": "3.Nc3",
+                          "children": [
+                            {
+                              "move": "Classical (B18)"
+                            },
+                            {
+                              "move": "Advance Variation (B12)"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "move": "1.d4",
+      "children": [
+        {
+          "move": "1...Nf6",
+          "children": [
+            {
+              "move": "2.c4",
+              "children": [
+                {
+                  "move": "King's Indian Defense (E60-E99)",
+                  "children": [
+                    {
+                      "move": "3.Nc3",
+                      "children": [
+                        {
+                          "move": "3...Bg7",
+                          "children": [
+                            {
+                              "move": "4.e4",
+                              "children": [
+                                {
+                                  "move": "Mar del Plata (E99)",
+                                  "children": [
+                                    {
+                                      "move": "9.Nd2",
+                                      "children": [
+                                        {
+                                          "move": "Bronstein Variation"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "move": "Classical (E94)",
+                                  "children": [
+                                    {
+                                      "move": "9.Ne1",
+                                      "children": [
+                                        {
+                                          "move": "Petrosian Variation"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "move": "3.g3",
+                      "children": [
+                        {
+                          "move": "Fianchetto Variation (E60)",
+                          "children": [
+                            {
+                              "move": "3...Bg7",
+                              "children": [
+                                {
+                                  "move": "4.Bg2",
+                                  "children": [
+                                    {
+                                      "move": "Panno Variation (E63)"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
