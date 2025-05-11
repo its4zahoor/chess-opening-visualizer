@@ -229,7 +229,13 @@ const ChessTree = () => {
       .text((d) => getMoveDisplay(d.data.move))
       .style('fill', (d) => getNodeColors(d.data.move).text)
       .style('font-size', '22px')
-      .style('font-weight', 700);
+      .style('font-weight', 700)
+      .style('paint-order', 'stroke')
+      .style('stroke', (d) =>
+        getNodeColors(d.data.move).text === '#fff' ? '#111' : '#fff'
+      )
+      .style('stroke-width', 3)
+      .style('stroke-linejoin', 'round');
   }, [selectedNode, collapsedNodes, dimensions]);
 
   // Helper function to get move display text
