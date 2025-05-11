@@ -1,12 +1,59 @@
-# React + Vite
+# Chess Opening Visualizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Interactive chess opening tree visualizer built with React and D3.**  
+Explore, search, and analyze chess openings visually.
 
-Currently, two official plugins are available:
+![screenshot](screenshot.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- Visualizes chess opening trees from structured data
+- Interactive: expand/collapse, zoom, pan, and tooltips
+- Color-coded for white, black, and opening nodes
+- Responsive, modern UI
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Demo
+
+[https://zahoor.dev/chess-opening-visualizer](https://zahoor.dev/chess-opening-visualizer) (after deployment)
+
+## Getting Started
+
+Clone the repository and run locally:
+
+```bash
+git clone https://github.com/its4zahoor/chess-opening-visualizer.git
+cd chess-opening-visualizer
+npm install
+npm run dev
+```
+
+Then open [http://localhost:5173](http://localhost:5173) in your browser.
+
+## Tech Stack
+
+- [React](https://react.dev/)
+- [Vite](https://vitejs.dev/)
+- [D3.js](https://d3js.org/)
+
+## Deployment
+
+This project is ready for instant deployment on [Vercel](https://vercel.com/):
+
+1. **Import your repo** at [vercel.com/new](https://vercel.com/new).
+2. Vercel auto-detects Vite/React. Just click **Deploy**.
+3. (Optional) Set your custom domain (see below).
+
+## Custom Domain
+
+1. Go to your Vercel dashboard → your project → Settings → Domains.
+2. Add your domain (e.g., `chess.zahoor.dev` or `zahoor.dev/chess-opening-visualizer`).
+3. Follow Vercel’s DNS instructions to point your domain.
+4. Wait for DNS to propagate—done!
+
+## Author
+
+- Zahoor Malik ([zahoor.dev](https://zahoor.dev) / [@its4zahoor](https://github.com/its4zahoor))
+
+---
+
+**Enjoy exploring chess openings visually!**
