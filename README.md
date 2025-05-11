@@ -14,7 +14,7 @@ Explore, search, and analyze chess openings visually.
 
 ## Demo
 
-[https://zahoor.dev/chess-opening-visualizer](https://zahoor.dev/chess-opening-visualizer) (after deployment)
+[https://chess-openings.zahoor.dev/](https://chess-openings.zahoor.dev/)
 
 ## Getting Started
 
