@@ -173,15 +173,11 @@ const ChessTree = () => {
           .style('pointer-events', 'none')
           .style('z-index', '1000');
         const openingName = getOpeningName(d);
-        const moveType = isWhiteMove(d.data.move);
-        let moveTypeText = '';
-        if (moveType === true) moveTypeText = "White's move";
-        else if (moveType === false) moveTypeText = "Black's move";
         tooltip
           .html(
             `<strong>${d.data.move}</strong>${
-              moveTypeText ? `<br/>${moveTypeText}` : ''
-            }${openingName ? `<br/><em>${openingName}</em>` : ''}`
+              openingName ? `<br/><em>${openingName}</em>` : ''
+            }`
           )
           .style('left', event.pageX + 10 + 'px')
           .style('top', event.pageY - 10 + 'px');
@@ -227,9 +223,9 @@ const ChessTree = () => {
 
     node
       .append('text')
-      .attr('dy', 7)
-      .attr('x', (d) => (d.children || d._children ? -20 : 20))
-      .attr('text-anchor', (d) => (d.children || d._children ? 'end' : 'start'))
+      .attr('x', 0)
+      .attr('dy', 28)
+      .attr('text-anchor', 'middle')
       .text((d) => getMoveDisplay(d.data.move))
       .style('fill', (d) => getNodeColors(d.data.move).text)
       .style('font-size', '22px')
