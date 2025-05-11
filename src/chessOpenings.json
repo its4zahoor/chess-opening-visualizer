@@ -1,0 +1,163 @@
+{
+  "Start": {
+    "1.e4": {
+      "1...e5": {
+        "2.Nf3": {
+          "2...Nc6": {
+            "Ruy-Lopez (C60-C99)": {
+              "3.Bb5": {
+                "3...a6": {
+                  "Morphy Defense (C70)": {
+                    "4.Ba4": {
+                      "4...Nf6": {
+                        "Berlin Defense (C65-C67)": {
+                          "5.O-O": {
+                            "5...Nxe4": {
+                              "Berlin Endgame (C67)": {}
+                            },
+                            "5...Be7": {
+                              "Classical Berlin (C65)": {}
+                            }
+                          }
+                        },
+                        "4...b5": {
+                          "Arkhangelsk Defense (C78)": {}
+                        }
+                      }
+                    }
+                  }
+                },
+                "3...Nf6": {
+                  "Steinitz Defense (C62)": {}
+                }
+              }
+            },
+            "Italian Game (C50-C59)": {
+              "3.Bc4": {
+                "3...Bc5": {
+                  "Giuoco Piano (C50)": {
+                    "4.c3": {
+                      "4...Nf6": {
+                        "Two Knights Defense (C55)": {}
+                      },
+                      "4...d6": {
+                        "Giuoco Pianissimo (C53)": {}
+                      }
+                    }
+                  }
+                },
+                "3...Nf6": {
+                  "Two Knights Defense (C55)": {
+                    "4.Ng5": {
+                      "4...d5": {
+                        "Traxler Counterattack (C57)": {}
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "Scotch Game (C44-C45)": {
+              "3.d4": {
+                "3...exd4": {
+                  "Scotch Gambit (C44)": {},
+                  "Mieses Variation (C45)": {}
+                }
+              }
+            }
+          }
+        }
+      },
+      "1...c5": {
+        "Sicilian Defense (B20-B99)": {
+          "2.Nf3": {
+            "2...d6": {
+              "Najdorf (B90-B99)": {
+                "5.a6": {
+                  "6.Be3": {
+                    "English Attack (B92)": {}
+                  },
+                  "6.Bg5": {
+                    "Poisoned Pawn (B97)": {}
+                  }
+                }
+              }
+            },
+            "2...Nc6": {
+              "Classical Sicilian (B56-B59)": {
+                "6.Be2": {
+                  "Sozin Attack (B57)": {}
+                }
+              }
+            },
+            "2...e6": {
+              "Taimanov (B46)": {},
+              "Kan (B41)": {}
+            }
+          }
+        }
+      },
+      "1...e6": {
+        "French Defense (C00-C19)": {
+          "2.d4": {
+            "2...d5": {
+              "3.Nc3": {
+                "Winawer (C18)": {
+                  "4.e5": {
+                    "Poisoned Pawn (C19)": {}
+                  }
+                },
+                "Classical (C14)": {}
+              }
+            }
+          }
+        }
+      },
+      "1...c6": {
+        "Caro-Kann (B10-B19)": {
+          "2.d4": {
+            "2...d5": {
+              "3.Nc3": {
+                "Classical (B18)": {},
+                "Advance Variation (B12)": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "1.d4": {
+      "1...Nf6": {
+        "2.c4": {
+          "King's Indian Defense (E60-E99)": {
+            "3.Nc3": {
+              "3...Bg7": {
+                "4.e4": {
+                  "Mar del Plata (E99)": {
+                    "9.Nd2": {
+                      "Bronstein Variation": {}
+                    }
+                  },
+                  "Classical (E94)": {
+                    "9.Ne1": {
+                      "Petrosian Variation": {}
+                    }
+                  }
+                }
+              }
+            },
+            "3.g3": {
+              "Fianchetto Variation (E60)": {
+                "3...Bg7": {
+                  "4.Bg2": {
+                    "Panno Variation (E63)": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
