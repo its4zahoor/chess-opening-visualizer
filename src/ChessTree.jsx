@@ -1,6 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import treeData from './openings.json';
+import openingData from './openings.json';
+
+// Helper function to get a unique path string for a node
+const getNodePath = (d) =>
+  d
+    .ancestors()
+    .map((x) => x.data.move)
+    .reverse()
+    .join('/');
+
+// Helper function to compare node to selectedNode by unique path
+const isSameNode = (a, selectedNode) =>
+  a && selectedNode && getNodePath(a) === getNodePath(selectedNode);
 
 const ChessTree = () => {
   const svgRef = useRef();
@@ -10,6 +22,10 @@ const ChessTree = () => {
     width: window.innerWidth,
     height: window.innerHeight,
   });
+  const [hoveredNode, setHoveredNode] = useState(null);
+  const [treeData, setTreeData] = useState(null);
+  const [transform, setTransform] = useState({ x: 0, y: 0, k: 1 });
+  const tooltipTimeoutRef = useRef(null);
 
   // Helper function to determine if a move is white's or black's
   const isWhiteMove = (move) => {
@@ -42,61 +58,16 @@ const ChessTree = () => {
     });
   };
 
+  // Calculate tree layout whenever relevant state changes
   useEffect(() => {
-    // Move getNodeColors inside useEffect
-    const getNodeColors = (move) => {
-      const moveType = isWhiteMove(move);
-      if (moveType === null) {
-        return {
-          circle: '#1976d2', // Blue for opening names
-          text: '#fff',
-          border: '#222',
-          hover: '#43a047',
-        };
-      }
-      if (moveType) {
-        return {
-          circle: '#fff', // White for white's moves
-          text: '#222',
-          border: '#222',
-          hover: '#43a047',
-        };
-      } else {
-        return {
-          circle: '#222', // Black for black's moves
-          text: '#fff',
-          border: '#222',
-          hover: '#43a047',
-        };
-      }
-    };
-
-    const svg = d3.select(svgRef.current);
-    svg.selectAll('*').remove();
-
-    // Increase spacing for readability
     const margin = { top: 80, right: 80, bottom: 80, left: 80 };
     const width = dimensions.width - margin.left - margin.right;
     const height = dimensions.height - margin.top - margin.bottom;
 
-    const g = svg
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
-      .append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`);
-
-    const zoom = d3
-      .zoom()
-      .scaleExtent([0.5, 3])
-      .on('zoom', (event) => {
-        g.attr('transform', event.transform);
-      });
-
-    svg.call(zoom);
-
-    // Increase node spacing
     const treeLayout = d3.tree().nodeSize([70, 220]).size([height, width]);
-    const root = d3.hierarchy(treeData);
+    const root = d3.hierarchy(openingData);
+
+    // Handle collapsed nodes
     const collapse = (d) => {
       if (d.children) {
         d._children = d.children;
@@ -109,127 +80,77 @@ const ChessTree = () => {
         collapse(d);
       }
     });
+
     root.x0 = height / 2;
     root.y0 = 0;
     treeLayout(root);
 
-    g.selectAll('.link')
-      .data(root.links())
-      .enter()
-      .append('path')
-      .attr('class', 'link')
-      .attr('fill', 'none')
-      .attr('stroke', '#222')
-      .attr('stroke-width', 4)
-      .attr(
-        'd',
-        d3
-          .linkHorizontal()
-          .x((d) => d.y)
-          .y((d) => d.x)
-      );
+    // Calculate initial transform to center the tree
+    const nodes = root.descendants();
+    const minX = Math.min(...nodes.map((d) => d.x));
+    const maxX = Math.max(...nodes.map((d) => d.x));
+    const minY = Math.min(...nodes.map((d) => d.y));
+    const maxY = Math.max(...nodes.map((d) => d.y));
 
-    const node = g
-      .selectAll('.node')
-      .data(root.descendants())
-      .enter()
-      .append('g')
-      .attr('class', 'node')
-      .attr('transform', (d) => `translate(${d.y},${d.x})`)
-      .style('cursor', 'pointer')
-      .on('mouseover', function (event, d) {
-        const path = [];
-        let current = d;
-        while (current.parent) {
-          path.push(current);
-          current = current.parent;
-        }
-        path.push(current);
-        node.selectAll('circle').each(function (d) {
-          const colors = getNodeColors(d.data.move);
-          d3.select(this)
-            .attr('fill', colors.circle)
-            .attr('stroke', colors.border)
-            .attr('r', 13);
-        });
-        path.forEach((p) => {
-          d3.select(this.parentNode)
-            .selectAll('.node')
-            .filter((n) => n === p)
-            .select('circle')
-            .attr('fill', '#43a047')
-            .attr('stroke', '#222')
-            .attr('r', 18);
-        });
-        const tooltip = d3
-          .select('body')
-          .append('div')
-          .attr('class', 'tooltip')
-          .style('position', 'absolute')
-          .style('background-color', '#fff')
-          .style('color', '#222')
-          .style('padding', '14px')
-          .style('border-radius', '10px')
-          .style('box-shadow', '0 2px 12px rgba(0,0,0,0.18)')
-          .style('pointer-events', 'none')
-          .style('z-index', '1000');
-        const openingName = getOpeningName(d);
-        tooltip
-          .html(
-            `<strong>${d.data.move}</strong>${
-              openingName !== d.data.move ? `<br/><em>${openingName}</em>` : ''
-            }`
-          )
-          .style('left', event.pageX + 10 + 'px')
-          .style('top', event.pageY - 10 + 'px');
-      })
-      .on('mouseout', function () {
-        node.selectAll('circle').each(function (d) {
-          const colors = getNodeColors(d.data.move);
-          d3.select(this)
-            .attr('fill', colors.circle)
-            .attr('stroke', colors.border)
-            .attr('r', 13);
-        });
-        d3.selectAll('.tooltip').remove();
-      })
-      .on('click', function (event, d) {
-        if (d.children || d._children) {
-          toggleNode(d);
-        }
-        setSelectedNode(d);
+    const treeWidth = maxY - minY;
+    const treeHeight = maxX - minX;
+
+    const scale =
+      Math.min(
+        (dimensions.width - margin.left - margin.right) / treeWidth,
+        (dimensions.height - margin.top - margin.bottom) / treeHeight
+      ) * 0.8; // 80% of the available space
+
+    const initialX = (dimensions.width - treeWidth * scale) / 2 - minY * scale;
+    const initialY =
+      (dimensions.height - treeHeight * scale) / 2 - minX * scale;
+
+    setTransform({ x: initialX, y: initialY, k: scale });
+    setTreeData(root);
+  }, [dimensions, collapsedNodes]);
+
+  // Setup zoom behavior
+  useEffect(() => {
+    if (!svgRef.current) return;
+
+    const svg = d3.select(svgRef.current);
+    const zoom = d3
+      .zoom()
+      .scaleExtent([0.5, 3])
+      .on('zoom', (event) => {
+        setTransform(event.transform);
       });
 
-    node
-      .append('circle')
-      .attr('r', 13)
-      .attr('fill', (d) => getNodeColors(d.data.move).circle)
-      .attr('stroke', (d) => getNodeColors(d.data.move).border)
-      .attr('stroke-width', 3);
+    svg.call(zoom);
+  }, []);
 
-    node
-      .append('text')
-      .attr('x', 0)
-      .attr('dy', 28)
-      .attr('text-anchor', 'middle')
-      .style('font-size', '22px')
-      .style('font-weight', 700)
-      .style('paint-order', 'stroke')
-      .style('stroke', (d) =>
-        getNodeColors(d.data.move).text === '#fff' ? '#111' : '#fff'
-      )
-      .style('stroke-width', 3)
-      .style('stroke-linejoin', 'round')
-      .style('fill', (d) => getNodeColors(d.data.move).text)
-      .html(function (d) {
-        const icon = d._children ? '+' : d.children ? '-' : '';
-        return icon
-          ? `<tspan class='expand-collapse' fill='#43a047' font-size='28' cursor='pointer'>${icon}</tspan> <tspan>${getMoveDisplay(
-              d.data.move
-            )}</tspan>`
-          : `<tspan>${getMoveDisplay(d.data.move)}</tspan>`;
-      });
-  }, [selectedNode, collapsedNodes, dimensions]);
+  // Helper function to get node colors
+  const getNodeColors = (move) => {
+    const moveType = isWhiteMove(move);
+    if (moveType === null) {
+      return {
+        circle: '#1976d2', // Blue for opening names
+        text: '#fff',
+        border: '#222',
+        hover: '#43a047',
+      };
+    }
+    if (moveType) {
+      return {
+        circle: '#fff', // White for white's moves
+        text: '#222',
+        border: '#222',
+        hover: '#43a047',
+      };
+    } else {
+      return {
+        circle: '#222', // Black for black's moves
+        text: '#fff',
+        border: '#eee', // White border for black nodes
+        hover: '#43a047',
+      };
+    }
+  };
 
   // Helper function to get move display text
   const getMoveDisplay = (move) => {
@@ -249,12 +170,89 @@ const ChessTree = () => {
     return '';
   };
 
+  // Handle node click
+  const handleNodeClick = (event, d) => {
+    event.stopPropagation();
+    if (isSameNode(d, selectedNode)) {
+      if (d.children || d._children) {
+        toggleNode(d);
+      }
+      return;
+    }
+    if (d.children || d._children) {
+      toggleNode(d);
+    }
+    setSelectedNode(d);
+  };
+
+  // Handle node hover
+  const handleNodeHover = (event, d) => {
+    setHoveredNode(d);
+    if (tooltipTimeoutRef.current) {
+      clearTimeout(tooltipTimeoutRef.current);
+    }
+    tooltipTimeoutRef.current = setTimeout(() => {
+      const tooltip = d3
+        .select('body')
+        .append('div')
+        .attr('class', 'tooltip')
+        .style('position', 'absolute')
+        .style('background-color', '#fff')
+        .style('color', '#222')
+        .style('padding', '14px')
+        .style('border-radius', '10px')
+        .style('box-shadow', '0 2px 12px rgba(0,0,0,0.18)')
+        .style('pointer-events', 'none')
+        .style('z-index', '1000');
+
+      const openingName = getOpeningName(d);
+      tooltip
+        .html(
+          `<strong>${d.data.move}</strong>${
+            openingName !== d.data.move ? `<br/><em>${openingName}</em>` : ''
+          }`
+        )
+        .style('left', event.pageX + 10 + 'px')
+        .style('top', event.pageY - 10 + 'px');
+    }, 150);
+  };
+
+  // Handle node hover out
+  const handleNodeHoverOut = () => {
+    setHoveredNode(null);
+    if (tooltipTimeoutRef.current) {
+      clearTimeout(tooltipTimeoutRef.current);
+      tooltipTimeoutRef.current = null;
+    }
+    d3.selectAll('.tooltip').remove();
+  };
+
+  if (!treeData) return null;
+
+  // Calculate selected and hovered paths
+  const selectedPathMoves = new Set();
+  if (selectedNode) {
+    selectedNode.ancestors().forEach((d) => {
+      selectedPathMoves.add(getNodePath(d));
+    });
+  }
+
+  const hoveredPathMoves = new Set();
+  if (hoveredNode) {
+    hoveredNode.ancestors().forEach((d) => {
+      hoveredPathMoves.add(getNodePath(d));
+    });
+  }
+
   return (
-    <div className='min-h-screen w-screen overflow-x-hidden flex flex-col items-center p-0 m-0 bg-gradient-to-br from-slate-100 to-slate-400'>
+    <div
+      className='min-h-screen w-screen overflow-x-hidden flex flex-col items-center p-0 m-0 bg-gradient-to-br from-slate-100 to-slate-400'
+      onClick={() => setSelectedNode(null)}
+    >
       {selectedNode && (
         <div className='fixed top-4 left-1/2 transform -translate-x-1/2 z-50 p-4 bg-white m-0 rounded-lg w-full max-w-3xl text-gray-900 shadow-md flex flex-col items-center flex-wrap gap-4'>
           <span className='font-bold text-base whitespace-nowrap overflow-hidden text-ellipsis'>
-            Selected Opening: {getOpeningName(selectedNode)}
+            {getOpeningName(selectedNode)}
           </span>
           <span className='text-sm text-gray-700 break-words'>
             Path:{' '}
@@ -270,8 +268,150 @@ const ChessTree = () => {
         <div className='absolute inset-0 z-0 bg-gradient-to-br from-slate-100 to-slate-400' />
         <svg
           ref={svgRef}
-          className='border-none w-screen h-full block relative z-10'
-        />
+          className='border-none w-screen h-screen block relative z-10'
+        >
+          <defs>
+            <filter
+              id='selected-glow'
+              x='-50%'
+              y='-50%'
+              width='200%'
+              height='200%'
+            >
+              <feDropShadow
+                dx='0'
+                dy='0'
+                stdDeviation='4'
+                floodColor='#43a047'
+                floodOpacity='0.7'
+              />
+            </filter>
+            <filter id='path-glow' x='-50%' y='-50%' width='200%' height='200%'>
+              <feDropShadow
+                dx='0'
+                dy='0'
+                stdDeviation='4'
+                floodColor='#e53935'
+                floodOpacity='0.7'
+              />
+            </filter>
+          </defs>
+          <g
+            transform={`translate(${transform.x},${transform.y}) scale(${transform.k})`}
+          >
+            {/* Render links */}
+            {treeData.links().map((link, i) => {
+              const isInSelectedPath =
+                selectedPathMoves.has(getNodePath(link.source)) &&
+                selectedPathMoves.has(getNodePath(link.target));
+              const isInHoveredPath =
+                hoveredPathMoves.has(getNodePath(link.source)) &&
+                hoveredPathMoves.has(getNodePath(link.target));
+
+              const path = d3
+                .linkHorizontal()
+                .x((d) => d.y)
+                .y((d) => d.x)(link);
+
+              return (
+                <path
+                  key={i}
+                  className='link'
+                  d={path}
+                  fill='none'
+                  stroke={
+                    isInHoveredPath
+                      ? '#fbbf24'
+                      : isInSelectedPath
+                      ? '#e53935'
+                      : '#222'
+                  }
+                  strokeWidth={isInHoveredPath ? 7 : isInSelectedPath ? 8 : 4}
+                />
+              );
+            })}
+
+            {/* Render nodes */}
+            {treeData.descendants().map((d, i) => {
+              const colors = getNodeColors(d.data.move);
+              const isSelected = isSameNode(d, selectedNode);
+              const isInSelectedPath = selectedPathMoves.has(getNodePath(d));
+              const isInHoveredPath = hoveredPathMoves.has(getNodePath(d));
+
+              return (
+                <g
+                  key={i}
+                  className='node'
+                  transform={`translate(${d.y},${d.x})`}
+                  style={{ cursor: 'pointer' }}
+                  onClick={(e) => handleNodeClick(e, d)}
+                  onMouseOver={(e) => handleNodeHover(e, d)}
+                  onMouseOut={handleNodeHoverOut}
+                >
+                  <circle
+                    r={
+                      isSelected
+                        ? 24
+                        : isInHoveredPath
+                        ? 20
+                        : isInSelectedPath
+                        ? 18
+                        : 13
+                    }
+                    fill={
+                      isSelected
+                        ? '#9c27b0'
+                        : isInHoveredPath
+                        ? '#fbbf24'
+                        : colors.circle
+                    }
+                    stroke={
+                      isInHoveredPath
+                        ? '#fbbf24'
+                        : isInSelectedPath
+                        ? '#e53935'
+                        : colors.border
+                    }
+                    strokeWidth={
+                      isSelected
+                        ? 6
+                        : isInHoveredPath
+                        ? 5
+                        : isInSelectedPath
+                        ? 4
+                        : 3
+                    }
+                    filter={
+                      isSelected
+                        ? 'url(#selected-glow)'
+                        : isInHoveredPath || isInSelectedPath
+                        ? 'url(#path-glow)'
+                        : null
+                    }
+                  />
+                  <text
+                    x={0}
+                    dy={28}
+                    textAnchor='middle'
+                    style={{
+                      fontSize: '22px',
+                      fontWeight: 700,
+                      paintOrder: 'stroke',
+                      stroke: colors.text === '#fff' ? '#111' : '#fff',
+                      strokeWidth: 3,
+                      strokeLinejoin: 'round',
+                      fill: colors.text,
+                      userSelect: 'none',
+                    }}
+                  >
+                    {d._children ? '+' : d.children ? '-' : ''}{' '}
+                    {getMoveDisplay(d.data.move)}
+                  </text>
+                </g>
+              );
+            })}
+          </g>
+        </svg>
       </div>
     </div>
   );
