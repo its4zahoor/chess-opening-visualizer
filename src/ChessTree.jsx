@@ -176,7 +176,7 @@ const ChessTree = () => {
         tooltip
           .html(
             `<strong>${d.data.move}</strong>${
-              openingName ? `<br/><em>${openingName}</em>` : ''
+              openingName !== d.data.move ? `<br/><em>${openingName}</em>` : ''
             }`
           )
           .style('left', event.pageX + 10 + 'px')
