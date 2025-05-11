@@ -136,6 +136,7 @@ const ChessTree = () => {
       .append('g')
       .attr('class', 'node')
       .attr('transform', (d) => `translate(${d.y},${d.x})`)
+      .style('cursor', 'pointer')
       .on('mouseover', function (event, d) {
         const path = [];
         let current = d;
@@ -208,26 +209,9 @@ const ChessTree = () => {
 
     node
       .append('text')
-      .attr('class', 'expand-collapse')
-      .attr('x', (d) => (d.children || d._children ? -32 : 0))
-      .attr('y', -20)
-      .attr('text-anchor', 'middle')
-      .text((d) => {
-        if (d._children) return '+';
-        if (d.children) return '-';
-        return '';
-      })
-      .style('fill', '#43a047')
-      .style('font-size', '32px')
-      .style('cursor', 'pointer');
-
-    node
-      .append('text')
       .attr('x', 0)
       .attr('dy', 28)
       .attr('text-anchor', 'middle')
-      .text((d) => getMoveDisplay(d.data.move))
-      .style('fill', (d) => getNodeColors(d.data.move).text)
       .style('font-size', '22px')
       .style('font-weight', 700)
       .style('paint-order', 'stroke')
@@ -235,7 +219,16 @@ const ChessTree = () => {
         getNodeColors(d.data.move).text === '#fff' ? '#111' : '#fff'
       )
       .style('stroke-width', 3)
-      .style('stroke-linejoin', 'round');
+      .style('stroke-linejoin', 'round')
+      .style('fill', (d) => getNodeColors(d.data.move).text)
+      .html(function (d) {
+        const icon = d._children ? '+' : d.children ? '-' : '';
+        return icon
+          ? `<tspan class='expand-collapse' fill='#43a047' font-size='28' cursor='pointer'>${icon}</tspan> <tspan>${getMoveDisplay(
+              d.data.move
+            )}</tspan>`
+          : `<tspan>${getMoveDisplay(d.data.move)}</tspan>`;
+      });
   }, [selectedNode, collapsedNodes, dimensions]);
 
   // Helper function to get move display text
@@ -259,7 +252,7 @@ const ChessTree = () => {
   return (
     <div className='min-h-screen w-screen overflow-x-hidden flex flex-col items-center p-0 m-0 bg-gradient-to-br from-slate-100 to-slate-400'>
       {selectedNode && (
-        <div className='p-4 bg-white m-4 rounded-lg w-full max-w-3xl text-gray-900 shadow-md flex flex-row items-center flex-wrap gap-4'>
+        <div className='fixed top-4 left-1/2 transform -translate-x-1/2 z-50 p-4 bg-white m-0 rounded-lg w-full max-w-3xl text-gray-900 shadow-md flex flex-col items-center flex-wrap gap-4'>
           <span className='font-bold text-base whitespace-nowrap overflow-hidden text-ellipsis'>
             Selected Opening: {getOpeningName(selectedNode)}
           </span>
