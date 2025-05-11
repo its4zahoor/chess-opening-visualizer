@@ -257,76 +257,28 @@ const ChessTree = () => {
   };
 
   return (
-    <div
-      style={{
-        background: 'linear-gradient(135deg, #e9ecef 0%, #b0b8c1 100%)',
-        minHeight: '100vh',
-        color: '#111',
-        width: '100vw',
-        overflowX: 'hidden',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: 0,
-        margin: 0,
-      }}
-    >
+    <div className='min-h-screen w-screen overflow-x-hidden flex flex-col items-center p-0 m-0 bg-gradient-to-br from-slate-100 to-slate-400'>
       {selectedNode && (
-        <div
-          style={{
-            padding: '1.5rem',
-            backgroundColor: '#fff',
-            margin: '1rem',
-            borderRadius: '12px',
-            width: '90%',
-            maxWidth: '1400px',
-            color: '#111',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.10)',
-          }}
-        >
-          <h3 style={{ fontWeight: 700 }}>
+        <div className='p-4 bg-white m-4 rounded-lg w-full max-w-3xl text-gray-900 shadow-md flex flex-row items-center flex-wrap gap-4'>
+          <span className='font-bold text-base whitespace-nowrap overflow-hidden text-ellipsis'>
             Selected Opening: {getOpeningName(selectedNode)}
-          </h3>
-          <p>
+          </span>
+          <span className='text-sm text-gray-700 break-words'>
             Path:{' '}
             {selectedNode
               .ancestors()
               .map((d) => d.data.move)
               .reverse()
               .join(' → ')}
-          </p>
-          <p>
-            Move Type:{' '}
-            {isWhiteMove(selectedNode.data.move) === true
-              ? "White's move"
-              : isWhiteMove(selectedNode.data.move) === false
-              ? "Black's move"
-              : 'Opening name'}
-          </p>
+          </span>
         </div>
       )}
-      <div
-        style={{
-          width: '100vw',
-          height: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          background: 'rgba(255,255,255,0.10)',
-          borderRadius: '0',
-          boxShadow: 'none',
-        }}
-      >
+      <div className='w-screen h-full flex justify-center items-center bg-white bg-opacity-10 rounded-none shadow-none relative'>
+        <div className='absolute inset-0 z-0 bg-gradient-to-br from-slate-100 to-slate-400' />
         <svg
           ref={svgRef}
-          style={{
-            border: 'none',
-            width: '100vw',
-            height: '100%',
-            background: 'transparent',
-            display: 'block',
-          }}
-        ></svg>
+          className='border-none w-screen h-full block relative z-10'
+        />
       </div>
     </div>
   );
