@@ -13,64 +13,9 @@ const ChessTree = () => {
 
   // Helper function to determine if a move is white's or black's
   const isWhiteMove = (move) => {
-    // If the move contains "..." it's black's move
-    if (move.includes('...')) {
-      return false;
-    }
-    // If it's an opening name (doesn't contain a move number), it's neutral
-    if (!move.match(/^\d+\./)) {
-      return null;
-    }
-    // Otherwise it's white's move
+    if (move.includes('...')) return false;
+    if (!move.match(/^\d+\./)) return null;
     return true;
-  };
-
-  // Helper function to get node colors
-  const getNodeColors = (move) => {
-    const moveType = isWhiteMove(move);
-    if (moveType === null) {
-      return {
-        circle: '#888888', // Neutral gray for opening names
-        text: '#ffffff', // White text
-        hover: '#4CAF50', // Green on hover
-      };
-    }
-    if (moveType) {
-      return {
-        circle: '#e0e0e0', // Light gray for white's moves
-        text: '#ffffff', // White text
-        hover: '#4CAF50', // Green on hover
-      };
-    } else {
-      return {
-        circle: '#666666', // Dark gray for black's moves
-        text: '#cccccc', // Light gray text
-        hover: '#4CAF50', // Green on hover
-      };
-    }
-  };
-
-  // Helper function to get move display text
-  const getMoveDisplay = (move) => {
-    // If it's an opening name, return empty string
-    if (!move.match(/^\d+\./)) {
-      return '';
-    }
-    // Remove move number and dots for cleaner display
-    return move.replace(/^\d+\.\.\.?/, '');
-  };
-
-  // Helper function to get opening name from node
-  const getOpeningName = (node) => {
-    // Look for the nearest parent that is an opening name
-    let current = node;
-    while (current) {
-      if (!current.data.move.match(/^\d+\./)) {
-        return current.data.move;
-      }
-      current = current.parent;
-    }
-    return '';
   };
 
   useEffect(() => {
@@ -98,10 +43,39 @@ const ChessTree = () => {
   };
 
   useEffect(() => {
+    // Move getNodeColors inside useEffect
+    const getNodeColors = (move) => {
+      const moveType = isWhiteMove(move);
+      if (moveType === null) {
+        return {
+          circle: '#1976d2', // Blue for opening names
+          text: '#fff',
+          border: '#222',
+          hover: '#43a047',
+        };
+      }
+      if (moveType) {
+        return {
+          circle: '#fff', // White for white's moves
+          text: '#222',
+          border: '#222',
+          hover: '#43a047',
+        };
+      } else {
+        return {
+          circle: '#222', // Black for black's moves
+          text: '#fff',
+          border: '#222',
+          hover: '#43a047',
+        };
+      }
+    };
+
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
-    const margin = { top: 60, right: 120, bottom: 60, left: 120 };
+    // Increase spacing for readability
+    const margin = { top: 80, right: 80, bottom: 80, left: 80 };
     const width = dimensions.width - margin.left - margin.right;
     const height = dimensions.height - margin.top - margin.bottom;
 
@@ -120,10 +94,9 @@ const ChessTree = () => {
 
     svg.call(zoom);
 
-    const treeLayout = d3.tree().size([height, width]);
-
+    // Increase node spacing
+    const treeLayout = d3.tree().nodeSize([70, 220]).size([height, width]);
     const root = d3.hierarchy(treeData);
-
     const collapse = (d) => {
       if (d.children) {
         d._children = d.children;
@@ -131,30 +104,23 @@ const ChessTree = () => {
         d.children = null;
       }
     };
-
     root.descendants().forEach((d) => {
       if (collapsedNodes.has(d.data.move)) {
         collapse(d);
       }
     });
-
     root.x0 = height / 2;
     root.y0 = 0;
-
     treeLayout(root);
 
-    // Draw links with animation
     g.selectAll('.link')
       .data(root.links())
       .enter()
       .append('path')
       .attr('class', 'link')
       .attr('fill', 'none')
-      .attr('stroke', (d) => {
-        // Color the link based on the target node's move
-        return isWhiteMove(d.target.data.move) ? '#e0e0e0' : '#666666';
-      })
-      .attr('stroke-width', 2)
+      .attr('stroke', '#222')
+      .attr('stroke-width', 4)
       .attr(
         'd',
         d3
@@ -163,7 +129,6 @@ const ChessTree = () => {
           .y((d) => d.x)
       );
 
-    // Draw nodes
     const node = g
       .selectAll('.node')
       .data(root.descendants())
@@ -179,57 +144,55 @@ const ChessTree = () => {
           current = current.parent;
         }
         path.push(current);
-
-        // Reset all nodes to their original colors
         node.selectAll('circle').each(function (d) {
           const colors = getNodeColors(d.data.move);
-          d3.select(this).attr('fill', colors.circle).attr('r', 6);
+          d3.select(this)
+            .attr('fill', colors.circle)
+            .attr('stroke', colors.border)
+            .attr('r', 13);
         });
-
-        // Highlight path nodes
         path.forEach((p) => {
           d3.select(this.parentNode)
             .selectAll('.node')
             .filter((n) => n === p)
             .select('circle')
-            .attr('fill', '#4CAF50')
-            .attr('r', 8);
+            .attr('fill', '#43a047')
+            .attr('stroke', '#222')
+            .attr('r', 18);
         });
-
         const tooltip = d3
           .select('body')
           .append('div')
           .attr('class', 'tooltip')
           .style('position', 'absolute')
-          .style('background-color', 'rgba(0, 0, 0, 0.8)')
-          .style('color', 'white')
-          .style('padding', '8px')
-          .style('border-radius', '4px')
+          .style('background-color', '#fff')
+          .style('color', '#222')
+          .style('padding', '14px')
+          .style('border-radius', '10px')
+          .style('box-shadow', '0 2px 12px rgba(0,0,0,0.18)')
           .style('pointer-events', 'none')
           .style('z-index', '1000');
-
         const openingName = getOpeningName(d);
         const moveType = isWhiteMove(d.data.move);
         let moveTypeText = '';
         if (moveType === true) moveTypeText = "White's move";
         else if (moveType === false) moveTypeText = "Black's move";
-
         tooltip
           .html(
-            `
-            <strong>${d.data.move}</strong>
-            ${moveTypeText ? `<br/>${moveTypeText}` : ''}
-            ${openingName ? `<br/><em>${openingName}</em>` : ''}
-          `
+            `<strong>${d.data.move}</strong>${
+              moveTypeText ? `<br/>${moveTypeText}` : ''
+            }${openingName ? `<br/><em>${openingName}</em>` : ''}`
           )
           .style('left', event.pageX + 10 + 'px')
           .style('top', event.pageY - 10 + 'px');
       })
       .on('mouseout', function () {
-        // Reset nodes to their original colors
         node.selectAll('circle').each(function (d) {
           const colors = getNodeColors(d.data.move);
-          d3.select(this).attr('fill', colors.circle).attr('r', 6);
+          d3.select(this)
+            .attr('fill', colors.circle)
+            .attr('stroke', colors.border)
+            .attr('r', 13);
         });
         d3.selectAll('.tooltip').remove();
       })
@@ -240,73 +203,88 @@ const ChessTree = () => {
         setSelectedNode(d);
       });
 
-    // Add circles to nodes with appropriate colors
     node
       .append('circle')
-      .attr('r', 6)
-      .attr('fill', (d) => getNodeColors(d.data.move).circle);
+      .attr('r', 13)
+      .attr('fill', (d) => getNodeColors(d.data.move).circle)
+      .attr('stroke', (d) => getNodeColors(d.data.move).border)
+      .attr('stroke-width', 3);
 
-    // Add expand/collapse indicators
     node
       .append('text')
       .attr('class', 'expand-collapse')
-      .attr('x', (d) => (d.children || d._children ? -20 : 0))
-      .attr('y', -10)
+      .attr('x', (d) => (d.children || d._children ? -32 : 0))
+      .attr('y', -20)
       .attr('text-anchor', 'middle')
       .text((d) => {
         if (d._children) return '+';
         if (d.children) return '-';
         return '';
       })
-      .style('fill', '#4CAF50')
-      .style('font-size', '20px')
+      .style('fill', '#43a047')
+      .style('font-size', '32px')
       .style('cursor', 'pointer');
 
-    // Add move text with appropriate colors
     node
       .append('text')
-      .attr('dy', 3)
-      .attr('x', (d) => (d.children || d._children ? -10 : 10))
+      .attr('dy', 7)
+      .attr('x', (d) => (d.children || d._children ? -20 : 20))
       .attr('text-anchor', (d) => (d.children || d._children ? 'end' : 'start'))
       .text((d) => getMoveDisplay(d.data.move))
       .style('fill', (d) => getNodeColors(d.data.move).text)
-      .style('font-size', '14px');
+      .style('font-size', '22px')
+      .style('font-weight', 700);
   }, [selectedNode, collapsedNodes, dimensions]);
+
+  // Helper function to get move display text
+  const getMoveDisplay = (move) => {
+    if (!move.match(/^\d+\./)) return '';
+    return move.replace(/^\d+\.\.\.?/, '');
+  };
+
+  // Helper function to get opening name from node
+  const getOpeningName = (node) => {
+    let current = node;
+    while (current) {
+      if (!current.data.move.match(/^\d+\./)) {
+        return current.data.move;
+      }
+      current = current.parent;
+    }
+    return '';
+  };
 
   return (
     <div
       style={{
-        backgroundColor: '#111',
+        background: 'linear-gradient(135deg, #e9ecef 0%, #b0b8c1 100%)',
         minHeight: '100vh',
-        color: '#fff',
+        color: '#111',
+        width: '100vw',
+        overflowX: 'hidden',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: '1rem',
+        padding: 0,
+        margin: 0,
       }}
     >
-      <h1
-        style={{
-          padding: '1rem',
-          fontSize: '2rem',
-          marginBottom: '1rem',
-          textAlign: 'center',
-        }}
-      >
-        Chess Opening Tree
-      </h1>
       {selectedNode && (
         <div
           style={{
-            padding: '1rem',
-            backgroundColor: '#222',
+            padding: '1.5rem',
+            backgroundColor: '#fff',
             margin: '1rem',
-            borderRadius: '8px',
-            width: '80%',
-            maxWidth: '1200px',
+            borderRadius: '12px',
+            width: '90%',
+            maxWidth: '1400px',
+            color: '#111',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.10)',
           }}
         >
-          <h3>Selected Opening: {getOpeningName(selectedNode)}</h3>
+          <h3 style={{ fontWeight: 700 }}>
+            Selected Opening: {getOpeningName(selectedNode)}
+          </h3>
           <p>
             Path:{' '}
             {selectedNode
@@ -327,20 +305,24 @@ const ChessTree = () => {
       )}
       <div
         style={{
-          width: '100%',
-          height: 'calc(100vh - 200px)',
+          width: '100vw',
+          height: '100%',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          background: 'rgba(255,255,255,0.10)',
+          borderRadius: '0',
+          boxShadow: 'none',
         }}
       >
         <svg
           ref={svgRef}
           style={{
-            border: '1px solid #444',
-            width: '100%',
+            border: 'none',
+            width: '100vw',
             height: '100%',
-            maxWidth: '1800px',
+            background: 'transparent',
+            display: 'block',
           }}
         ></svg>
       </div>
